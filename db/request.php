@@ -18,8 +18,10 @@ class Request extends Entity {
     protected $dateRequest;
     protected $dateEnd;
     protected $closed;
+    protected $confirmed;
 
     public function __construct() {
         $this->addType('closed', 'boolean');
+        $this->addType('confirmed', 'boolean');
     }
 }

@@ -29,7 +29,7 @@ class User_Files_Migrate extends App {
          * Controllers
          */
         $container->registerService('RequestController', function($c){
-            return new PageController(
+            return new RequestController(
                 $c->query('AppName'),
                 $c->query('Request'),
                 $c->query('RequestMapper'),
@@ -46,6 +46,13 @@ class User_Files_Migrate extends App {
                 $c->query('RequestMapper'),
                 $c->query('UserId')
             );
+        });
+
+        /**
+         * Storage Layer
+         */
+        $container->registerService('RootStorage', function($c) {
+            return $c->query('ServerContainer')->getRootFolder();
         });
 
         /**

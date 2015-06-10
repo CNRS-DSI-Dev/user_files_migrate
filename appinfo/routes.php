@@ -17,14 +17,19 @@ $application->registerRoutes($this, array(
     'routes' => array(
         // REQUEST API
         array(
-            'name' => 'request#ask',
-            'url' => '/api/1.0/request/{uid}',
-            'verb' => 'POST',
-        ),
-        array(
             'name' => 'request#get',
             'url' => '/api/1.0/request/{uid}',
             'verb' => 'GET',
+        ),
+        array(
+            'name' => 'request#confirm',
+            'url' => '/api/1.0/confirm/{request_id}',
+            'verb' => 'GET',
+        ),
+        array(
+            'name' => 'request#ask',
+            'url' => '/api/1.0/request',
+            'verb' => 'POST',
         ),
 
         // CORS

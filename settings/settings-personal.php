@@ -32,10 +32,22 @@ if (!empty($infos['ownRequest']['requesterUid']) and $infos['ownRequest']['reque
 
 $extRequestWaiting = false;
 $extRequestRequester = '';
-$confirmDisabled = true;
 if (!empty($infos['extRequest']['recipientUid']) and $infos['extRequest']['recipientUid'] == $uid) {
     $extRequestWaiting = true;
+    $extRequestId = $infos['extRequest']['requestId'];
     $extRequestRequester = $infos['extRequest']['requesterUid'];
+
+    $requesterFileSize = $c->query('RequestService')->getRequesterUsedSpace($extRequestRequester);
+    $humanRequesterFileSize = \OC_Helper::humanFileSize($requesterFileSize);
+
+    $ownFileSize = $c->query('RequestService')->getFreeSpace();
+    // $ownFileSize = 10; // test
+    $humanOwnFileSize = \OC_Helper::humanFileSize($ownFileSize);
+
+    $sizeWarning = false;
+    if ($requesterFileSize > $ownFileSize) {
+        $sizeWarning = true;
+    }
 }
 
 // the current user has a request waiting
@@ -46,9 +58,14 @@ if ($ownRequestWaiting) {
 
 // there is a request for current user
 $tmpl->assign('ext_request_waiting', $extRequestWaiting);
+$tmpl->assign('ext_file_size', $humanRequesterFileSize);
+$tmpl->assign('own_file_size', $humanOwnFileSize);
+$tmpl->assign('ext_request_id', $extRequestId);
+$tmpl->assign('size_warning', $sizeWarning);
+
 $tmpl->assign('from_uid', $extRequestRequester);
 
-if ($confirmDisabled) {
+if ($sizeWarning) {
     $tmpl->assign('ufm_confirm', ' disabled="disabled"');
 }
 else {

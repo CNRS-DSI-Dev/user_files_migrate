@@ -16,11 +16,14 @@ use \OCP\IRequest;
 use \OCA\User_Files_Migrate\Db\RequestMapper;
 use \OCA\User_Files_Migrate\Db\Request;
 
-class RequestController extends APIController {
+class RequestController extends APIController
+{
 
     protected $requestService;
+    protected $userId;
 
-    public function __construct($appName, IRequest $request, RequestMapper $requestMapper, $RequestService, $userId){
+    public function __construct($appName, IRequest $request, RequestMapper $requestMapper, $RequestService, $userId)
+    {
         parent::__construct($appName, $request, 'GET, POST');
         $this->requestMapper = $requestMapper;
         $this->requestService = $requestService;
@@ -28,17 +31,44 @@ class RequestController extends APIController {
     }
 
     /**
-     * Returns
+     * Create a request
      * @NoAdminRequired
      * @CORS
+     * @param string $recipientUid
      */
-    public function ask() {
-        $request = new Request;
+    public function ask($recipientUid)
+    {
+        try {
+            if (empty($recipientUid)) {
+                throw new \Exception('Please set the recipient identifier.');
+            }
+            $this->requestMapper->saveRequest($this->userId, $recipientUid);
+        }
+        catch(\Exception $e) {
+            $response = new JSONResponse();
+            return array('msg' => $e->getMessage());
+        }
 
-        $request->setRequesterUid($this->userId);
-        $this->requestMapper->insert($request);
+        return true;
+    }
 
-        return $request;
+    /**
+     * Confirm a request
+     * @NoAdminRequired
+     * @CORS
+     * @param string $recipientUid
+     */
+    public function confirm($request_id)
+    {
+        try {
+            $this->requestMapper->confirmRequest($this->userId, $request_id);
+        }
+        catch(\Exception $e) {
+            $response = new JSONResponse();
+            return array('code' => 'ko', 'msg' => $e->getMessage());
+        }
+
+        return array('code' => 'ok');
     }
 
     /**
@@ -46,7 +76,8 @@ class RequestController extends APIController {
      * @NoAdminRequired
      * @CORS
      */
-    public function get() {
+    public function get()
+    {
         $result = array(
             'test'              => 'ok',
         );

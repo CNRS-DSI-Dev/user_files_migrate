@@ -23,24 +23,90 @@ class RequestService
     }
 
     /**
-     * Returns
+     * Returns owned and external migration requests
      * @return array
      */
     public function getInfos()
     {
-        $ownRequest = $this->requestMapper->findOwnRequest($this->userId);
-        $extRequest = $this->requestMapper->findExtRequest($this->userId);
-
-        return array(
+        $infos = array(
             'ownRequest' => array(
-                'requesterUid' => $ownRequest->getRequesterUid(),
-                'recipientUid' => $ownRequest->getRecipientUid(),
+                'requesterUid' => '',
+                'recipientUid' => '',
             ),
             'extRequest' => array(
-                'requesterUid' => $extRequest->getRequesterUid(),
-                'recipientUid' => $extRequest->getRecipientUid(),
+                'requestId' => '',
+                'requesterUid' => '',
+                'recipientUid' => '',
             ),
         );
+
+        $ownRequest = $this->requestMapper->findOwnRequest($this->userId);
+        if (!empty($ownRequest)) {
+            $infos['ownRequest'] = array(
+                'requesterUid' => $ownRequest->getRequesterUid(),
+                'recipientUid' => $ownRequest->getRecipientUid(),
+            );
+        }
+
+        $extRequest = $this->requestMapper->findExtRequest($this->userId);
+        if (!empty($extRequest)) {
+            $infos['extRequest'] = array(
+                'requestId' => $extRequest->getId(),
+                'requesterUid' => $extRequest->getRequesterUid(),
+                'recipientUid' => $extRequest->getRecipientUid(),
+            );
+        }
+
+        return $infos;
+    }
+
+    /**
+     * Returns the total size of a user folder (files only)
+     * @param  string $uid User ID
+     * @return int|false
+     */
+    function getRequesterUsedSpace($uid)
+    {
+        $view = new \OC\Files\View();
+        $this->getFilesSize($view, '/' . $uid . '/files', $requesterFileSize);
+
+        return $requesterFileSize;
+    }
+
+    /**
+     * Returns the free space size for the current user
+     * @return int
+     */
+    public function getFreeSpace()
+    {
+        $storageInfo = \OC_Helper::getStorageInfo();
+        $fileSize = $storageInfo['free'];
+
+        return $fileSize;
+    }
+
+    /**
+     * Get some user informations on files and folders
+     * @param \OC\Files\View $view
+     * @param string $path the path
+     * @param int $fileSize to store the total filesize
+     */
+    protected function getFilesSize($view, $path='', &$fileSize) {
+        $dc = $view->getDirectoryContent($path);
+
+        foreach($dc as $item) {
+            if ($item->isShared()) {
+                continue;
+            }
+
+            // if folder, recurse
+            if ($item->getType() == \OCP\Files\FileInfo::TYPE_FOLDER) {
+                $this->getFilesSize($view, $item->getPath(), $fileSize);
+            }
+            else {
+                $fileSize += $item->getSize();
+            }
+        }
     }
 
 }

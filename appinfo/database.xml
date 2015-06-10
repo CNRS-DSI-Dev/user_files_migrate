@@ -38,6 +38,11 @@
                 <type>timestamp</type>
             </field>
             <field>
+                <name>confirmed</name>
+                <type>boolean</type>
+                <default>0</default>
+            </field>
+            <field>
                 <name>closed</name>
                 <type>boolean</type>
                 <default>0</default>

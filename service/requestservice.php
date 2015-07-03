@@ -16,7 +16,7 @@ class RequestService
     protected $requestMapper;
     protected $userId;
 
-    public function __construct(\OCA\Dashboard\Db\RequestMapper $requestMapper, $userId)
+    public function __construct(\OCA\User_Files_Migrate\Db\RequestMapper $requestMapper, $userId)
     {
         $this->requestMapper = $requestMapper;
         $this->userId = $userId;
@@ -28,34 +28,13 @@ class RequestService
      */
     public function getInfos()
     {
-        $infos = array(
-            'ownRequest' => array(
-                'requesterUid' => '',
-                'recipientUid' => '',
-            ),
-            'extRequest' => array(
-                'requestId' => '',
-                'requesterUid' => '',
-                'recipientUid' => '',
-            ),
-        );
-
         $ownRequest = $this->requestMapper->findOwnRequest($this->userId);
-        if (!empty($ownRequest)) {
-            $infos['ownRequest'] = array(
-                'requesterUid' => $ownRequest->getRequesterUid(),
-                'recipientUid' => $ownRequest->getRecipientUid(),
-            );
-        }
-
         $extRequest = $this->requestMapper->findExtRequest($this->userId);
-        if (!empty($extRequest)) {
-            $infos['extRequest'] = array(
-                'requestId' => $extRequest->getId(),
-                'requesterUid' => $extRequest->getRequesterUid(),
-                'recipientUid' => $extRequest->getRecipientUid(),
-            );
-        }
+
+        $infos = array(
+            'ownRequest' => $ownRequest,
+            'extRequest' => $extRequest,
+        );
 
         return $infos;
     }

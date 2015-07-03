@@ -22,49 +22,79 @@ $tmpl = new \OCP\Template($c->query('AppName'), 'settings-personal');
 
 $uid = $c->query('UserId');
 $infos = $c->query('RequestService')->getInfos();
+$ownRequest = $infos['ownRequest'];
+$extRequest = $infos['extRequest'];
 
-$ownRequestWaiting = false;
+// no owned request
+$createDisplay = 'block';
+$cancelDisplay = 'none';
+$msgValidateDisplay = 'none';
+$msgConfirmedDisplay = 'none';
+$ownRequestId = '';
 $ownRequestRecipient = '';
-if (!empty($infos['ownRequest']['requesterUid']) and $infos['ownRequest']['requesterUid'] == $uid) {
-    $ownRequestWaiting = true;
-    $ownRequestRecipient = $infos['ownRequest']['recipientUid'];
-}
 
-$extRequestWaiting = false;
-$extRequestRequester = '';
-if (!empty($infos['extRequest']['recipientUid']) and $infos['extRequest']['recipientUid'] == $uid) {
-    $extRequestWaiting = true;
-    $extRequestId = $infos['extRequest']['requestId'];
-    $extRequestRequester = $infos['extRequest']['requesterUid'];
-
-    $requesterFileSize = $c->query('RequestService')->getRequesterUsedSpace($extRequestRequester);
-    $humanRequesterFileSize = \OC_Helper::humanFileSize($requesterFileSize);
-
-    $ownFileSize = $c->query('RequestService')->getFreeSpace();
-    // $ownFileSize = 10; // test
-    $humanOwnFileSize = \OC_Helper::humanFileSize($ownFileSize);
-
-    $sizeWarning = false;
-    if ($requesterFileSize > $ownFileSize) {
-        $sizeWarning = true;
+// with owned request
+if (!empty($ownRequest)) {
+    if ($ownRequest->getStatus() == Db\RequestMapper::CREATED) {
+        $createDisplay = 'none';
+        $cancelDisplay = 'block';
+        $msgValidateDisplay = 'block';
+        $ownRequestId = $ownRequest->getId();
+        $ownRequestRecipient = $ownRequest->getRecipientUid();
+    }
+    elseif ($ownRequest->getStatus() == Db\RequestMapper::CONFIRMED) {
+        $createDisplay = 'none';
+        $msgConfirmedDisplay = 'block';
     }
 }
 
-// the current user has a request waiting
-$tmpl->assign('own_request_waiting', $ownRequestWaiting);
-if ($ownRequestWaiting) {
-    $tmpl->assign('recipient_uid', $ownRequestRecipient);
+// no ext request
+$waitingDisplay = 'none';
+$extRequestRequester = '';
+$sizeWarning = false;
+$humanRequesterFileSize = '';
+$humanOwnFileSize = '';
+$extRequestId = '';
+
+// with ext request
+if (!empty($extRequest)) {
+    $createDisplay = 'none';
+
+    if ($extRequest->getStatus() == Db\RequestMapper::CREATED) {
+        $waitingDisplay = 'block';
+        $extRequestId = $extRequest->getId();
+        $extRequestRequester = $extRequest->getRequesterUid();
+
+        $requesterFileSize = $c->query('RequestService')->getRequesterUsedSpace($extRequestRequester);
+        $humanRequesterFileSize = \OC_Helper::humanFileSize($requesterFileSize);
+
+        $ownFileSize = $c->query('RequestService')->getFreeSpace();
+        // $ownFileSize = 10; // test
+        $humanOwnFileSize = \OC_Helper::humanFileSize($ownFileSize);
+
+        if ($requesterFileSize > $ownFileSize) {
+            $sizeWarning = true;
+        }
+    }
+    elseif ($extRequest->getStatus() == Db\RequestMapper::CONFIRMED) {
+        $msgConfirmedDisplay = 'block';
+    }
 }
 
-// there is a request for current user
-$tmpl->assign('ext_request_waiting', $extRequestWaiting);
+
+$tmpl->assign('createDisplay', $createDisplay);
+$tmpl->assign('cancelDisplay', $cancelDisplay);
+$tmpl->assign('msgValidateDisplay', $msgValidateDisplay);
+$tmpl->assign('msgConfirmedDisplay', $msgConfirmedDisplay);
+$tmpl->assign('ownRequestId', $ownRequestId);
+$tmpl->assign('ownRequestRecipient', $ownRequestRecipient);
+
+$tmpl->assign('waitingDisplay', $waitingDisplay);
+$tmpl->assign('from_uid', $extRequestRequester);
+$tmpl->assign('size_warning', $sizeWarning);
 $tmpl->assign('ext_file_size', $humanRequesterFileSize);
 $tmpl->assign('own_file_size', $humanOwnFileSize);
-$tmpl->assign('ext_request_id', $extRequestId);
-$tmpl->assign('size_warning', $sizeWarning);
-
-$tmpl->assign('from_uid', $extRequestRequester);
-
+$tmpl->assign('extRequestId', $extRequestId);
 if ($sizeWarning) {
     $tmpl->assign('ufm_confirm', ' disabled="disabled"');
 }

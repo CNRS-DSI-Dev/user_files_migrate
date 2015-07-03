@@ -4,7 +4,7 @@
  * ownCloud - User Files Migrate
  *
  * @author Patrick Paysant <ppaysant@linagora.com>
- * @copyright 2014 CNRS DSI
+ * @copyright 2015 CNRS DSI
  * @license This file is licensed under the Affero General Public License version 3 or later. See the COPYING file.
  */
 
@@ -13,6 +13,7 @@ namespace OCA\User_Files_Migrate\App;
 use \OCP\AppFramework\App;
 use \OCA\User_Files_Migrate\Controller\RequestController;
 use \OCA\User_Files_Migrate\Service\RequestService;
+use \OCA\User_Files_Migrate\Service\MailService;
 use \OCA\User_Files_Migrate\Db\RequestMapper;
 
 class User_Files_Migrate extends App {
@@ -48,6 +49,16 @@ class User_Files_Migrate extends App {
             );
         });
 
+        $container->registerService('MailService', function($c){
+            return new MailService(
+                $c->query('AppName'),
+                $c->query('L10N'),
+                $c->query('Config'),
+                $c->query('UserManager'),
+                $c->query('GroupManager')
+            );
+        });
+
         /**
          * Storage Layer
          */
@@ -67,12 +78,24 @@ class User_Files_Migrate extends App {
         /**
          * Core
          */
+        $container->registerService('Config', function($c) {
+            return $c->query('ServerContainer')->getConfig();
+        });
+
         $container->registerService('UserId', function($c) {
             return \OCP\User::getUser();
         });
 
         $container->registerService('L10N', function($c) {
             return $c->query('ServerContainer')->getL10N($c->query('AppName'));
+        });
+
+        $container->registerService('UserManager', function($c) {
+            return $c->query('ServerContainer')->getUserManager();
+        });
+
+        $container->registerService('GroupManager', function($c) {
+            return $c->query('ServerContainer')->getGroupManager();
         });
 
     }

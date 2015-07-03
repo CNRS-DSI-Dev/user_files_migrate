@@ -27,6 +27,11 @@ $application->registerRoutes($this, array(
             'verb' => 'GET',
         ),
         array(
+            'name' => 'request#cancel',
+            'url' => '/api/1.0/cancel/{request_id}',
+            'verb' => 'GET',
+        ),
+        array(
             'name' => 'request#ask',
             'url' => '/api/1.0/request',
             'verb' => 'POST',

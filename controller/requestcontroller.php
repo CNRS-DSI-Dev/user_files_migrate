@@ -4,7 +4,7 @@
  * ownCloud - User Files Migrate
  *
  * @author Patrick Paysant <ppaysant@linagora.com>
- * @copyright 2014 CNRS DSI
+ * @copyright 2015 CNRS DSI
  * @license This file is licensed under the Affero General Public License version 3 or later. See the COPYING file.
  */
 
@@ -22,7 +22,7 @@ class RequestController extends APIController
     protected $requestService;
     protected $userId;
 
-    public function __construct($appName, IRequest $request, RequestMapper $requestMapper, $RequestService, $userId)
+    public function __construct($appName, IRequest $request, RequestMapper $requestMapper, $requestService, $userId)
     {
         parent::__construct($appName, $request, 'GET, POST');
         $this->requestMapper = $requestMapper;
@@ -38,24 +38,44 @@ class RequestController extends APIController
      */
     public function ask($recipientUid)
     {
+        if ($recipientUid == $this->userId) {
+            $response = new JSONResponse();
+            return array(
+                'status' => 'self',
+                'data' => array(
+                    'msg' => "Requesting a migration to self is not allowed.",
+                ),
+            );
+        }
+
         try {
             if (empty($recipientUid)) {
                 throw new \Exception('Please set the recipient identifier.');
             }
-            $this->requestMapper->saveRequest($this->userId, $recipientUid);
+            $request = $this->requestMapper->saveRequest($this->userId, $recipientUid);
         }
         catch(\Exception $e) {
             $response = new JSONResponse();
-            return array('msg' => $e->getMessage());
+            return array(
+                'status' => 'error',
+                'data' => array(
+                    'msg' => $e->getMessage(),
+                ),
+            );
         }
 
-        return true;
+        return array(
+            'status' => 'success',
+            'data' => array(
+                'msg' => 'Request saved',
+                'requestId' => $request->getId(),
+            ),
+        );
     }
 
     /**
      * Confirm a request
      * @NoAdminRequired
-     * @CORS
      * @param string $recipientUid
      */
     public function confirm($request_id)
@@ -68,13 +88,40 @@ class RequestController extends APIController
             return array('code' => 'ko', 'msg' => $e->getMessage());
         }
 
-        return array('code' => 'ok');
+        return array(
+            'status' => 'success',
+            'data' => array(
+                'msg' => 'Request confirmed',
+            ),
+        );
+    }
+
+    /**
+     * Cancel a request
+     * @NoAdminRequired
+     * @param string $recipientUid
+     */
+    public function cancel($request_id)
+    {
+        try {
+            $this->requestMapper->cancelRequest($this->userId, $request_id);
+        }
+        catch(\Exception $e) {
+            $response = new JSONResponse();
+            return array('code' => 'ko', 'msg' => $e->getMessage());
+        }
+
+        return array(
+            'status' => 'success',
+            'data' => array(
+                'msg' => 'Request cancelled',
+            ),
+        );
     }
 
     /**
      * Returns
      * @NoAdminRequired
-     * @CORS
      */
     public function get()
     {

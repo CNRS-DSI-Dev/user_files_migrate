@@ -8,54 +8,41 @@
  * @license This file is licensed under the Affero General Public License version 3 or later. See the COPYING file.
  */
 
+\OCP\Util::addStyle('user_files_migrate', 'settings-personnal');
 \OCP\Util::addScript('user_files_migrate', 'user_files_migrate_settings');
 
 ?>
-<style type="text/css">
-    #user_files_migrate #extRequestWaiting > div:first-child {
-        color: green;
-    }
-    #user_files_migrate #extRequestWaiting #dataSize{
-        display: table;
-        width: 35%;
-        text-align: center;
-    }
 
-    #user_files_migrate #extRequestWaiting #dataSize .dataRow {
-        display: table-row;
-    }
-
-    #user_files_migrate #extRequestWaiting #dataSize .dataRow div {
-        display: table-cell;
-    }
-    #user_files_migrate .sizeWarning {
-        color: red;
-        font-weight: bold;
-    }
-</style>
 <div id="user_files_migrate" class="section">
     <h2><?php p($l->t('User Files Migrate')); ?></h2>
 
-    <?php if ($_['own_request_waiting']): ?>
-    <div>
-        <form id="user_files_migrate_form">
-            <?php p($l->t('You want to request files migration from your account to the account which identifier is: ')); ?>
-            <input type="text" id="recipient_uid" value="<?php p($_['recipient_uid']); ?>">
-            <input type="submit" value="Request">
-        </form>
-    </div>
-    <?php else: ?>
-    <div>
-        <form id="user_files_migrate_form">
+    <span id="ufm_notifications_msg" class="msg"></span>
+
+    <div id="ufm_request" style="display: <?php p($_['createDisplay']);?>">
+        <form id="ufm_request_form">
             <?php p($l->t('If you want to request files migration from your account to another account, please set the other account identifier: ')); ?>
             <input type="text" id="recipient_uid">
             <input type="submit" value="Request">
         </form>
     </div>
-    <?php endif; ?>
 
-    <?php if ($_['ext_request_waiting']): ?>
-    <div id="extRequestWaiting">
+    <div id="ufm_cancel" style="display: <?php p($_['cancelDisplay']);?>">
+        <form id="ufm_cancel_form">
+            <?php print_unescaped($l->t('You requested a files migration from your account to the account which identifier is: <span>%s</span>', array($_['ownRequestRecipient']))); ?>
+            <input type="hidden" id="own_request_id" value="<?php p($_['ownRequestId']); ?>" disabled="disabled">
+            <input type="submit" id="ownMigrationCancel" value="Cancel">
+        </form>
+    </div>
+
+    <p class="ufm_msg_validate" style="display: <?php p($_['msgValidateDisplay']);?>">
+        <?php p($l->t("Please connect with the other account to validate this request")); ?>.
+    </p>
+
+    <p class="ufm_msg_confirmed" style="display: <?php p($_['msgConfirmedDisplay']);?>">
+        <?php p($l->t("Your files migration request has been confirmed. It will be processed soon.")); ?>
+    </p>
+
+    <div id="extRequestWaiting" style="display: <?php p($_['waitingDisplay']);?>">
         <div>
             <?php p($l->t('A files migration has been requested from the account which identifier is: ')); ?>
             <input type="text" id="requester_uid" disabled="disabled" value="<?php p($_['from_uid']); ?>">
@@ -72,14 +59,13 @@
                     <?php p($_['own_file_size']); ?>
                 </div>
                 <form id="user_files_migrate_confirm">
-                    <input type="hidden" id="ext_request_id" name="ext_request_id" value="<?php echo $_['ext_request_id'];?>">
+                    <input type="hidden" id="ext_request_id" name="ext_request_id" value="<?php echo $_['extRequestId'];?>">
+                    <input type="submit" id="migrationCancel"<?php echo $_['ufm_confirm'];?> value="Cancel">
                     <input type="submit" id="migrationConfirm"<?php echo $_['ufm_confirm'];?> value="Confirm">
                 </form>
             </div>
         </div>
     </div>
-    <?php endif; ?>
-
 
 </div>
 

@@ -1,0 +1,23 @@
+#user_files_migrate #extRequestWaiting > div:first-child {
+    color: green;
+}
+#user_files_migrate #extRequestWaiting #dataSize{
+    display: table;
+    width: 35%;
+    text-align: center;
+}
+
+#user_files_migrate #extRequestWaiting #dataSize .dataRow {
+    display: table-row;
+}
+
+#user_files_migrate #extRequestWaiting #dataSize .dataRow div {
+    display: table-cell;
+}
+#user_files_migrate .sizeWarning {
+    color: red;
+    font-weight: bold;
+}
+#user_files_migrate .ufm_msg_validate {
+    display: none;
+}

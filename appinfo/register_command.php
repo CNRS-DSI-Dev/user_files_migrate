@@ -14,5 +14,7 @@ $app = new User_Files_Migrate;
 $c = $app->getContainer();
 $requestMapper = $c->query('RequestMapper');
 $mailService = $c->query('MailService');
+$UserManager = $c->query('UserManager');
+$GroupManager = $c->query('GroupManager');
 
-$application->add(new OCA\User_Files_Migrate\Command\Migrate($requestMapper, $mailService));
+$application->add(new OCA\User_Files_Migrate\Command\Migrate($requestMapper, $mailService, $UserManager, $GroupManager));

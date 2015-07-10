@@ -21,7 +21,7 @@
 <td width="20px">&nbsp;</td>
 <td style="font-weight:normal; font-size:0.8em; line-height:1.2em; font-family:verdana,'arial',sans;">
 <?php
-    p($l->t('<p>Hello,</p>'));
+    print_unescaped($l->t('<p>Hello,</p>'));
     print_unescaped($l->t("<p>Your file migration request from account %s has been processed.</p>\n", array($_['requester'])));
 ?>
 </td>
@@ -30,9 +30,9 @@
 <tr>
 <td width="20px">&nbsp;</td>
 <td style="font-weight:normal; font-size:0.8em; line-height:1.2em; font-family:verdana,'arial',sans;">--<br>
-<?php p($theme->getName()); ?> -
+<?php p($theme->getEntity()); ?> -
 <?php p($theme->getSlogan()); ?>
-<br><a href="<?php p($theme->getBaseUrl()); ?>"><?php p($theme->getBaseUrl());?></a>
+<br><a href="<?php p($theme->getDocBaseUrl()); ?>"><?php p($theme->getDocBaseUrl());?></a>
 </td>
 </tr>
 <tr>

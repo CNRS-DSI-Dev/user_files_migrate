@@ -27,12 +27,16 @@ class Migrate extends Command
 
     protected $requestMapper;
     protected $mailService;
+    protected $userManager;
+    protected $groupManager;
     protected $output;
 
-    public function __construct(\OCA\User_Files_Migrate\Db\RequestMapper $requestMapper, \OCA\User_Files_Migrate\Service\MailService $mailService)
+    public function __construct(\OCA\User_Files_Migrate\Db\RequestMapper $requestMapper, \OCA\User_Files_Migrate\Service\MailService $mailService, $userManager, $groupManager)
     {
         $this->requestMapper = $requestMapper;
         $this->mailService = $mailService;
+        $this->userManager = $userManager;
+        $this->groupManager = $groupManager;
         parent::__construct();
     }
 
@@ -87,6 +91,24 @@ class Migrate extends Command
             $this->recursiveCopy($request->getRequesterUid(), $request->getRecipientUid());
 
             // put old account in special group
+            // -- search groups for requester
+            $requesterUser = $this->userManager->get($request->getRequesterUid());
+            $groupIds = $this->groupManager->getUserGroupIds($requesterUser);
+            // -- search main group
+            $exclusionGroupConf =  \OCP\config::getSystemValue('migration_exclusion_groups');
+            if (is_array($exclusionGroupConf)) {
+                foreach($exclusionGroupConf as $mainGroupId => $exclusionGroupId) {
+                    if (in_array($mainGroupId, $groupIds)) {
+                        $toGroupId = $exclusionGroupId;
+                        break;
+                    }
+                }
+            }
+            if (empty($toGroupId)) {
+                $toGroupId = \OCP\config::getSystemValue('migration_default_exclusion_group');
+            }
+            $toGroup = $this->groupManager->get($toGroupId);
+            $toGroup->addUser($requesterUser);
 
             // send mails
             $this->mailService->mailUser($request->getRequesterUid());

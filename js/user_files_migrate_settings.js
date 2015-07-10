@@ -41,7 +41,9 @@ $(document).ready(function() {
         $('#migrationConfirm').on('click', function(event) {
             event.preventDefault();
 
-            OCdialogs.confirm('Are you sure to CONFIRM this migration request ?', 'Confirm migration request', confirmExtMigrationRequest, true);
+            // /usr/share/doc/udev/README.Debian.gz
+            var requesterUid = $('#requester_uid').val();
+            OCdialogs.confirm('Are you sure to CONFIRM this migration request from ' + requesterUid + ' to ' + OC.currentUser + ' ?', 'Confirm migration request', confirmExtMigrationRequest, true);
         });
     }
 

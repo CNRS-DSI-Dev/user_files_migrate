@@ -66,7 +66,12 @@ if (!empty($extRequest)) {
         $extRequestRequester = $extRequest->getRequesterUid();
 
         $requesterFileSize = $c->query('RequestService')->getRequesterUsedSpace($extRequestRequester);
-        $humanRequesterFileSize = \OC_Helper::humanFileSize($requesterFileSize);
+        if (empty($requesterFileSize)) {
+            $humanRequesterFileSize = "Empty";
+        }
+        else {
+            $humanRequesterFileSize = \OC_Helper::humanFileSize($requesterFileSize);
+        }
 
         $ownFileSize = $c->query('RequestService')->getFreeSpace();
         // $ownFileSize = 10; // test

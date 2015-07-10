@@ -65,7 +65,7 @@ class mailService
      */
     public function mailMonitors($requesterUid, $recipientUid)
     {
-        $toAddress = $toName = $this->config->getSystemValue('monitoring_admin_email');
+        $toAddress = $toName = $this->config->getSystemValue('migration_admin_email');
 
         $theme = new \OC_Defaults;
 
@@ -103,29 +103,40 @@ class mailService
         $user = $this->userManager->get($recipientUid);
         $groupIds = $this->groupManager->getUserGroupIds($user);
 
-        // search group against a pattern...
-        $pattern = $this->config->getSystemValue('mainGroup_pattern');
-        foreach($groupIds as $gid) {
-            if (preg_match(preg_quote($pattern), $gid)) {
-                $groupId = $gid;
-                break;
-            }
-        }
-        // $groupId = 'migration'; // tests
+        // // search group against a pattern...
+        // $pattern = $this->config->getSystemValue('main_group_pattern');
+        // foreach($groupIds as $gid) {
+        //     if (preg_match(preg_quote($pattern), $gid)) {
+        //         $groupId = $gid;
+        //         break;
+        //     }
+        // }
+        // // $groupId = 'migration'; // tests
 
-        // get group's subadmins ids
-        if (!empty($groupId)) {
-            $subAdminIds = \OC_SubAdmin::getGroupsSubAdmins($groupId);
-            $toAddress = join(', ', $subAdminIds);
+        // // get group's subadmins ids
+        // if (!empty($groupId)) {
+        //     $subAdminIds = \OC_SubAdmin::getGroupsSubAdmins($groupId);
+        //     $toAddress = join(', ', $subAdminIds);
+        // }
+
+        // search group against a list of groups
+        $adminGroups =  $this->config->getSystemValue('migration_admin_emails');
+        if (is_array($adminGroups)) {
+            foreach($adminGroups as $adminGroupId => $adminGroupMail) {
+                if (in_array($adminGroupId, $groupIds)) {
+                    $toAddress = $adminGroupMail;
+                    break;
+                }
+            }
         }
 
         if (empty($toAddress)) {
-            $toAddress = $this->config->getSystemValue('custom_admin_email');
+            $toAddress = $this->config->getSystemValue('migration_default_admin_email');
         }
 
         $theme = new \OC_Defaults;
 
-        $subject = (string) $this->l->t('%s - Files Migration processed', array($theme->getTitle()));
+        $subject = (string) $this->l->t('%s - Files migration processed', array($theme->getTitle()));
         $html = new \OCP\Template($this->appName, "mail_subadmins_html", "");
         $html->assign('requester', $requesterUid);
         $html->assign('recipient', $recipientUid);

@@ -33,6 +33,7 @@ class User_Files_Migrate extends App {
             return new RequestController(
                 $c->query('AppName'),
                 $c->query('Request'),
+                $c->query('L10N'),
                 $c->query('RequestMapper'),
                 $c->query('RequestService'),
                 $c->query('UserId')
@@ -71,7 +72,8 @@ class User_Files_Migrate extends App {
          */
         $container->registerService('RequestMapper', function($c) {
             return new RequestMapper(
-                $c->query('ServerContainer')->getDb()
+                $c->query('ServerContainer')->getDb(),
+                $c->query('L10N')
             );
         });
 

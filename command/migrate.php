@@ -115,7 +115,7 @@ class Migrate extends Command
             $this->mailService->mailGroupAdmin($request->getRequesterUid(), $request->getRecipientUid());
             $this->mailService->mailMonitors($request->getRequesterUid(), $request->getRecipientUid());
 
-// $this->requestMapper->closeRequest($request->getId());
+            $this->requestMapper->closeRequest($request->getId());
         }
     }
 

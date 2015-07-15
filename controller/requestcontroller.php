@@ -13,6 +13,7 @@ namespace OCA\User_Files_Migrate\Controller;
 use \OCP\AppFramework\APIController;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\IRequest;
+use \OCP\IL10N;
 use \OCA\User_Files_Migrate\Db\RequestMapper;
 use \OCA\User_Files_Migrate\Db\Request;
 
@@ -22,9 +23,10 @@ class RequestController extends APIController
     protected $requestService;
     protected $userId;
 
-    public function __construct($appName, IRequest $request, RequestMapper $requestMapper, $requestService, $userId)
+    public function __construct($appName, IRequest $request, IL10N $l, RequestMapper $requestMapper, $requestService, $userId)
     {
         parent::__construct($appName, $request, 'GET, POST');
+        $this->l = $l;
         $this->requestMapper = $requestMapper;
         $this->requestService = $requestService;
         $this->userId = $userId;
@@ -43,14 +45,14 @@ class RequestController extends APIController
             return array(
                 'status' => 'self',
                 'data' => array(
-                    'msg' => "Requesting a migration to self is not allowed.",
+                    'msg' => $this->l->t("Requesting a migration to self is not allowed."),
                 ),
             );
         }
 
         try {
             if (empty($recipientUid)) {
-                throw new \Exception('Please set the recipient identifier.');
+                throw new \Exception($this->l->t('Please set the recipient identifier.'));
             }
             $request = $this->requestMapper->saveRequest($this->userId, $recipientUid);
         }
@@ -91,7 +93,7 @@ class RequestController extends APIController
         return array(
             'status' => 'success',
             'data' => array(
-                'msg' => 'Request confirmed',
+                'msg' => $this->l->t('Request confirmed'),
             ),
         );
     }
@@ -114,7 +116,7 @@ class RequestController extends APIController
         return array(
             'status' => 'success',
             'data' => array(
-                'msg' => 'Request cancelled',
+                'msg' => $this->l->t('Request cancelled'),
             ),
         );
     }
@@ -126,7 +128,7 @@ class RequestController extends APIController
     public function get()
     {
         $result = array(
-            'test'              => 'ok',
+            'test' => 'ok',
         );
 
         return $result;

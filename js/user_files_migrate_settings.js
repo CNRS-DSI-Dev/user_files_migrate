@@ -30,7 +30,7 @@ $(document).ready(function() {
             $('#extRequestWaiting').hide();
         })
         .fail(function(data) {
-            alert('KO, server error while creating request.');
+            alert(t('KO, server error while creating request.'));
         })
 
         return false;
@@ -43,7 +43,7 @@ $(document).ready(function() {
 
             // /usr/share/doc/udev/README.Debian.gz
             var requesterUid = $('#requester_uid').val();
-            OCdialogs.confirm('Are you sure to CONFIRM this migration request from ' + requesterUid + ' to ' + OC.currentUser + ' ?', 'Confirm migration request', confirmExtMigrationRequest, true);
+            OCdialogs.confirm(t('user_files_migrate', 'Are you sure to CONFIRM this migration request from {requesterUid} to {currentUser} ?', {'requesterUid': requesterUid, 'currentUser': OC.currentUser}), 'Confirm migration request', confirmExtMigrationRequest, true);
         });
     }
 
@@ -51,13 +51,13 @@ $(document).ready(function() {
     $('#ownMigrationCancel').on('click', function(event) {
         event.preventDefault();
 
-        OCdialogs.confirm('Are you sure to CANCEL this migration request ?', 'Cancel migration request', cancelOwnMigrationRequest, true);
+        OCdialogs.confirm(t('Are you sure to CANCEL this migration request ?'), 'Cancel migration request', cancelOwnMigrationRequest, true);
     });
     if ($('#migrationCancel').is(':disabled') == false) {
         $('#migrationCancel').on('click', function(event) {
             event.preventDefault();
 
-            OCdialogs.confirm('Are you sure to CANCEL this migration request ?', 'Cancel migration request', cancelExtMigrationRequest, true);
+            OCdialogs.confirm(t('Are you sure to CANCEL this migration request ?'), 'Cancel migration request', cancelExtMigrationRequest, true);
         });
     }
 });
@@ -72,11 +72,11 @@ function confirmExtMigrationRequest(ok) {
         .success(function(data) {
             if (data.status == 'success') {
                 OC.msg.finishedSaving('#ufm_notifications_msg', data);
-                $('#extRequestWaiting').text('Your migration request from ' + $('#requester_uid').val() + ' is confirmed. It will be processed soon.');
+                $('#extRequestWaiting').text(t('Your migration request from {requesterUid} is confirmed. It will be processed soon.', {'requesterUid': $('#requester_uid').val()}));
             }
         })
         .fail(function() {
-            alert('KO, server error while confirming request.')
+            alert(t('KO, server error while confirming request.'));
         })
     }
 }
@@ -107,10 +107,10 @@ function cancelMigrationRequest(requestId) {
             $('#ufm_cancel').hide();
             $('.ufm_msg_validate').hide();
             $('#extRequestWaiting').show();
-            $('#extRequestWaiting').text('Your migration request has been cancelled.');
+            $('#extRequestWaiting').text(t('Your migration request has been cancelled.'));
         }
     })
     .fail(function() {
-        alert('KO, server error while confirming request.')
+        alert(t('KO, server error while confirming request.'));
     })
 }

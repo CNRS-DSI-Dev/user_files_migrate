@@ -49,7 +49,7 @@
         </div>
         <div id="dataSize">
             <div class="dataRow">
-                <div>From account's files size</div><div>Your account disk space available</div>
+                <div><?php p($l->t("From account's files size")); ?></div><div><?php p($l->t("Your account disk space available")); ?></div>
             </div>
             <div class="dataRow">
                 <div<?php if ($_['size_warning']) { ?> class="sizeWarning"<?php } ?>>
@@ -60,8 +60,8 @@
                 </div>
                 <form id="user_files_migrate_confirm">
                     <input type="hidden" id="ext_request_id" name="ext_request_id" value="<?php echo $_['extRequestId'];?>">
-                    <input type="submit" id="migrationCancel"<?php echo $_['ufm_confirm'];?> value="Cancel">
-                    <input type="submit" id="migrationConfirm"<?php echo $_['ufm_confirm'];?> value="Confirm">
+                    <input type="submit" id="migrationCancel"<?php echo $_['ufm_confirm'];?> value="<?php p($l->t('Cancel'));?>">
+                    <input type="submit" id="migrationConfirm"<?php echo $_['ufm_confirm'];?> value="<?php p($l->t('Confirm'));?>">
                 </form>
             </div>
         </div>

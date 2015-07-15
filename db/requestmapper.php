@@ -11,6 +11,7 @@
 namespace OCA\User_Files_Migrate\Db;
 
 use \OCP\IDb;
+use \OCP\IL10N;
 use \OCP\AppFramework\Db\Mapper;
 
 class RequestMapper extends Mapper
@@ -19,23 +20,27 @@ class RequestMapper extends Mapper
     const CONFIRMED = 2;
     const PROCESSED = 3;
 
-    public function __construct(IDb $db)
+    protected $l;
+
+    public function __construct(IDb $db, IL10N $l)
     {
+        $this->l = $l;
+
         parent::__construct($db, 'user_files_migrate');
     }
 
     public function saveRequest($requester_uid, $recipient_uid, $limit=null, $offset=null)
     {
-        $sql = "SELECT * FROM *PREFIX*user_files_migrate WHERE requester_uid = ? AND recipient_uid = ? AND status != " . self::PROCESSED;
+        $sql = "SELECT * FROM *PREFIX*user_files_migrate WHERE requester_uid = ? AND status != " . self::PROCESSED;
         try {
-            $request = $this->findEntity($sql, array($requester_uid, $recipient_uid), $limit, $offset);
+            $request = $this->findEntity($sql, array($requester_uid), $limit, $offset);
 
             $this->delete($request);
         }
         catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
         }
         catch (\OCP\AppFramework\Db\MultipleObjectsReturnedException $e) {
-            throw new \Exception('Server error: more than one request with same requester/recipient pair.');
+            throw new \Exception($this->l->t('Server error: more than one request with same requester/recipient pair.'));
             return false;
         }
 
@@ -59,11 +64,11 @@ class RequestMapper extends Mapper
             $request = $this->findEntity($sql, array($requestId, $recipientUid), $limit, $offset);
         }
         catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
-            throw new \Exception('Server error: no open unconfirmed request for this recipient.');
+            throw new \Exception($this->l->t('Server error: no open unconfirmed request for this recipient.'));
             return false;
         }
         catch (\OCP\AppFramework\Db\MultipleObjectsReturnedException $e) {
-            throw new \Exception('Server error: more than one request with same requester/recipient pair.');
+            throw new \Exception($this->l->t('Server error: more than one request with same requester/recipient pair.'));
             return false;
         }
 
@@ -82,11 +87,11 @@ class RequestMapper extends Mapper
             $request = $this->findEntity($sql, array($requestId, $userId, $userId), $limit, $offset);
         }
         catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
-            throw new \Exception('Server error: no open unconfirmed request with this id.');
+            throw new \Exception($this->l->t('Server error: no open unconfirmed request with this id.'));
             return false;
         }
         catch (\OCP\AppFramework\Db\MultipleObjectsReturnedException $e) {
-            throw new \Exception('Server error: more than one request with same id!');
+            throw new \Exception($this->l->t('Server error: more than one request with same id!'));
             return false;
         }
 
@@ -156,12 +161,12 @@ class RequestMapper extends Mapper
             $request = $this->findEntity($sql, array($requestId), $limit, $offset);
         }
         catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
-            throw new \Exception('Server error: no open confirmed request with this id.');
+            throw new \Exception($this->l->t('Server error: no open confirmed request with this id.'));
             return false;
         }
         // useless ?
         catch (\OCP\AppFramework\Db\MultipleObjectsReturnedException $e) {
-            throw new \Exception('Server error: more than one request with this id !!!.');
+            throw new \Exception($this->l->t('Server error: more than one request with this id !!'));
             return false;
         }
 

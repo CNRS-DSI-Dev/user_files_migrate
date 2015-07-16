@@ -1,6 +1,6 @@
 # User Files Migrate
 
-Owncloud 7 app that allows a user to request for migrating files between between two owncloud accounts.
+Owncloud 7 app that allows a user to request for migrating files between two owncloud accounts.
 
 The user *must* be able to connect on both account. He will be presented a section in personnal admin page that will allow to first create, then confirm  a files migration request.
 
@@ -8,18 +8,23 @@ The user *must* be able to connect on both account. He will be presented a secti
 
 ## Steps to request a files migration
 
-- The user must connect to the first account, go to the personnal admin page, the, request a files migration to another account login.
-- The user must connect to the second account, go to the personnal admin page, then confirm that the requested datas migration is valid.
+To request a files migration from a first account to another account :
+
+- The user must connect to the first account, go to the personnal admin page, then request a files migration to another account login.
+- The user must connect to the second account, go to the personnal admin page, then confirm that the requested files migration is valid.
 - The files migration will be processed in batch mode.
+
+If there's no enough space available in the target account to host the files from first account, the migration won't be allowed (the confirm button will be disabled and an error message displayed).
 
 ## Configuration
 
-The files migration process is use the app's command line utility. For the needs of CNRS organisation, some tasks are launched at the end of it :
+The files migration process is run via the app's command line utility. Some tasks are launched at the end of the process :
 - a mail is sent to the user 
 - a mail is sent to a monitoring team. The monitoring mail address has to be set in `config.php`
 - a mail is sent to the target account's main group admin (more below)
 - the first account is added to a specific owncloud group, depending on the first account's main group (more below)
-These tasks should be configured in config.php
+
+These tasks must be configured in config.php
 
 ```php
 'migration_admin_email' => 'monitoring@yourdomain.tld',
@@ -35,7 +40,9 @@ These tasks should be configured in config.php
 'migration_default_exclusion_group' => 'maingroup_specific',
 ```
 
-Here at CNRS organisation, each user is member of a hierarchy of groups. The main group is the top-level group in this hierarchy.
+Here at CNRS organisation, each user is member of a hierarchy of groups. The main group is the top-level group in this hierarchy. As ownCloud does not implement hierarchy of group, this app use these conf variables to find out the top level groups.
+
+The "default" conf variables are used if the user's "main" group is not found.
 
 The "From" mail address have to be configured in your admin panel. See http://doc.owncloud.org/server/7.0/admin_manual/configuration/configuration_mail.html
 
@@ -54,7 +61,7 @@ The utility may list the pending requests
 or process them (you have to sudo webserver's user to keep filesystem rights)
 
 ```sh
-sudo -u apache ./occ help user_files_migrate:migrate
+sudo -u apache ./occ user_files_migrate:migrate
 ```
 
 ## Contributing

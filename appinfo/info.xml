@@ -3,7 +3,7 @@
     <id>user_files_migrate</id>
     <name>User File Migrate</name>
     <description>Allows the user to migrate data between two owned OC accounts.</description>
-    <version>0.1</version>
+    <version>1.0</version>
     <licence>AGPLv3</licence>
     <author>Patrick Paysant / CNRS</author>
     <require>7</require>

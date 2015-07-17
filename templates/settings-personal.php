@@ -22,7 +22,7 @@
         <form id="ufm_request_form">
             <?php p($l->t('If you want to request files migration from your account to another account, please set the other account identifier: ')); ?>
             <input type="text" id="recipient_uid">
-            <input type="submit" value="Request">
+            <input type="submit" value="<?php p($l->t('Request'));?>">
         </form>
     </div>
 
@@ -30,7 +30,7 @@
         <form id="ufm_cancel_form">
             <?php print_unescaped($l->t('You requested a files migration from your account to the account which identifier is: <span>%s</span>', array($_['ownRequestRecipient']))); ?>
             <input type="hidden" id="own_request_id" value="<?php p($_['ownRequestId']); ?>" disabled="disabled">
-            <input type="submit" id="ownMigrationCancel" value="Cancel">
+            <input type="submit" id="ownMigrationCancel" value="<?php p($l->t('Cancel'));?>">
         </form>
     </div>
 

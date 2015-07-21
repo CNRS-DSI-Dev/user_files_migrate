@@ -7,6 +7,9 @@
  * @license This file is licensed under the Affero General Public License version 3 or later. See the COPYING file.
  */
 ?>
+
+<?php $l = $_['overwriteL10N']; ?>
+
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
 <tr><td>
 <table cellspacing="0" cellpadding="0" border="0" width="600px">
@@ -20,13 +23,12 @@
 <tr>
 <td width="20px">&nbsp;</td>
 <td style="font-weight:normal; font-size:0.8em; line-height:1.2em; font-family:verdana,'arial',sans;">
-<?php
-    print_unescaped($l->t('<p>Hello,</p>'));
-    print_unescaped($l->t("<p>A file migration request from account %s to account %s has been processed.</p>\n", array(
+<p><?php p($l->t('Hello,')); ?></p>
+<p><?php p($l->t("A file migration request from account %s to account %s has been processed.", array(
         $_['requester'],
         $_['recipient'],
     )));
-?>
+?></p>
 </td>
 </tr>
 <tr><td colspan="2">&nbsp;</td></tr>

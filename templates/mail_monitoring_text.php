@@ -7,11 +7,14 @@
  * @license This file is licensed under the Affero General Public License version 3 or later. See the COPYING file.
  */
 
-    print_unescaped($l->t("A file migration request from account %s to account %s has been processed.\n", array(
+    $l = $_['overwriteL10N'];
+
+    print_unescaped($l->t("A file migration request from account %s to account %s has been processed.", array(
         $_['requester'],
         $_['recipient'],
     )));
 ?>
+
 
 --
 <?php p($theme->getName() . ' - ' . $theme->getSlogan()); ?>

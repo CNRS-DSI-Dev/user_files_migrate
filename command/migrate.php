@@ -107,6 +107,10 @@ class Migrate extends Command
             if (empty($toGroupId)) {
                 $toGroupId = \OCP\config::getSystemValue('migration_default_exclusion_group');
             }
+            if (empty($toGroupId)) {
+                $this->consoleDisplay('Error: unable to find an exclusion group for the request ' . $request->getId() . '.');
+                return false;
+            }
             $toGroup = $this->groupManager->get($toGroupId);
             $toGroup->addUser($requesterUser);
 

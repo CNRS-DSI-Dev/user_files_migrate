@@ -41,11 +41,11 @@ class RequestController extends APIController
     public function ask($recipientUid)
     {
         if ($recipientUid == $this->userId) {
-            $response = new JSONResponse();
+            // $response = new JSONResponse();
             return array(
                 'status' => 'self',
                 'data' => array(
-                    'msg' => $this->l->t("Requesting a migration to self is not allowed."),
+                    'msg' => "Requesting a migration to self is not allowed.",
                 ),
             );
         }

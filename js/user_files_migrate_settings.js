@@ -5,9 +5,15 @@ $(document).ready(function() {
     $('#ufm_request_form input[type=submit]').on('click', function(event) {
         event.preventDefault();
 
+        var value = $('#recipient_uid').val();
+
+        if (value == '') {
+            alert(t('user_files_migrate', 'Please set the recipient identifier.'));
+            return false;
+        }
+
         OC.msg.startSaving('#ufm_notifications_msg');
 
-        var value = $('#recipient_uid').val();
         $.post(
             OC.generateUrl('apps/user_files_migrate/api/1.0/request'),
             {'recipientUid': value }
@@ -15,7 +21,8 @@ $(document).ready(function() {
         .success(function(data) {
             OC.msg.finishedSaving('#ufm_notifications_msg', data);
             if (data.status == 'self') {
-                alert(data.data.msg);
+                alert(t('user_files_migrate', data.data.msg));
+                $('#ufm_notifications_msg').delay(3000).fadeOut(900);
                 return
             }
             $('#ufm_cancel').show();
@@ -30,7 +37,7 @@ $(document).ready(function() {
             $('#extRequestWaiting').hide();
         })
         .fail(function(data) {
-            alert(t('KO, server error while creating request.'));
+            alert(t('user_files_migrate', 'KO, server error while creating request.'));
         })
 
         return false;

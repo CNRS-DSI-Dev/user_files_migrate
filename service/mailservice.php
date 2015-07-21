@@ -36,16 +36,20 @@ class mailService
      */
     public function mailUser($requesterUid)
     {
+        $l = $this->getUserLanguage($requesterUid);
+
         $toAddress = $toName = $requesterUid;
 
         $theme = new \OC_Defaults;
 
-        $subject = (string) $this->l->t('%s - Files Migration processed', array($theme->getTitle()));
+        $subject = (string) $l->t('%s - Files migration processed', array($theme->getTitle()));
         $html = new \OCP\Template($this->appName, "mail_user_html", "");
+        $html->assign('overwriteL10N', $l);
         $html->assign('requester', $requesterUid);
         $htmlMail = $html->fetchPage();
 
         $alttext = new \OCP\Template($this->appName, "mail_user_text", "");
+        $alttext->assign('overwriteL10N', $l);
         $alttext->assign('requester', $requesterUid);
         $altMail = $alttext->fetchPage();
 
@@ -59,23 +63,27 @@ class mailService
     }
 
     /**
-     * Send a mail signaling end of files migration to user
+     * Send a mail signaling end of files migration to monitoring address
      * @param int $requesterUid (the "from migration account" id)
      * @param int $recipientUid (the "to migration account" id)
      */
     public function mailMonitors($requesterUid, $recipientUid)
     {
+        $l = $this->getSystemlanguage();
+
         $toAddress = $toName = $this->config->getSystemValue('migration_admin_email');
 
         $theme = new \OC_Defaults;
 
-        $subject = (string) $this->l->t('%s - Files Migration processed', array($theme->getTitle()));
+        $subject = (string) $l->t('%s - Files migration processed', array($theme->getTitle()));
         $html = new \OCP\Template($this->appName, "mail_monitoring_html", "");
+        $html->assign('overwriteL10N', $l);
         $html->assign('requester', $requesterUid);
         $html->assign('recipient', $recipientUid);
         $htmlMail = $html->fetchPage();
 
         $alttext = new \OCP\Template($this->appName, "mail_monitoring_text", "");
+        $alttext->assign('overwriteL10N', $l);
         $alttext->assign('requester', $requesterUid);
         $html->assign('recipient', $recipientUid);
         $altMail = $alttext->fetchPage();
@@ -96,6 +104,8 @@ class mailService
      */
     public function mailGroupAdmin($requesterUid, $recipientUid)
     {
+        $l = $this->getSystemlanguage();
+
         $toAddress = '';
         $groupId = '';
 
@@ -136,13 +146,15 @@ class mailService
 
         $theme = new \OC_Defaults;
 
-        $subject = (string) $this->l->t('%s - Files migration processed', array($theme->getTitle()));
+        $subject = (string) $l->t('%s - Files migration processed', array($theme->getTitle()));
         $html = new \OCP\Template($this->appName, "mail_subadmins_html", "");
+        $html->assign('overwriteL10N', $l);
         $html->assign('requester', $requesterUid);
         $html->assign('recipient', $recipientUid);
         $htmlMail = $html->fetchPage();
 
         $alttext = new \OCP\Template($this->appName, "mail_subadmins_text", "");
+        $alttext->assign('overwriteL10N', $l);
         $alttext->assign('requester', $requesterUid);
         $html->assign('recipient', $recipientUid);
         $altMail = $alttext->fetchPage();
@@ -154,5 +166,28 @@ class mailService
         } catch (\Exception $e) {
             \OCP\Util::writeLog('user_files_migrate', "Can't send mail for subadmins: " . $e->getMessage(), \OCP\Util::ERROR);
         }
+    }
+
+    /**
+     * Returns system default language object (implementing IL10N)
+     * @return \OCP\IL10N Language object
+     */
+    protected function getSystemlanguage()
+    {
+        $lang = \OCP\Config::getSystemValue('default_language', 'en');
+
+        return \OC_L10N::get($this->appName, $lang);
+    }
+
+    /**
+     * Returns user preferred language object
+     * @param  string $userId
+     * @return \OCP\IL10N Language object
+     */
+    protected function getUserLanguage($userId)
+    {
+        $lang = \OCP\Config::getUserValue($userId, 'core', 'lang', \OCP\Config::getSystemValue('default_language', 'en'));
+
+        return \OC_L10N::get($this->appName, $lang);
     }
 }

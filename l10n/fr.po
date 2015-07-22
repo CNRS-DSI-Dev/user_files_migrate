@@ -1,0 +1,168 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ownCloud Core 7.0.5\n"
+"Report-Msgid-Bugs-To: translations@owncloud.org\n"
+"POT-Creation-Date: 2015-07-15 11:15+0200\n"
+"PO-Revision-Date: 2015-07-15 11:38+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.2\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: controller/requestcontroller.php:48
+msgid "Requesting a migration to self is not allowed."
+msgstr "Demander une migration vers soi-même n'est pas autorisé."
+
+#: controller/requestcontroller.php:55
+msgid "Please set the recipient identifier."
+msgstr "Merci de saisir l'identifiant du destinataire."
+
+#: controller/requestcontroller.php:96
+msgid "Request confirmed"
+msgstr "Demande confirmée"
+
+#: controller/requestcontroller.php:119
+msgid "Request cancelled"
+msgstr "Demande annulée"
+
+#: db/requestmapper.php:43 db/requestmapper.php:71
+msgid "Server error: more than one request with same requester/recipient pair."
+msgstr ""
+"Erreur serveur : plus d'une demande avec les mêmes demandeur/destinataire."
+
+#: db/requestmapper.php:67
+msgid "Server error: no open unconfirmed request for this recipient."
+msgstr ""
+"Erreur serveur : aucune demande ouverte non confirmée pour ce destinataire."
+
+#: db/requestmapper.php:90
+msgid "Server error: no open unconfirmed request with this id."
+msgstr ""
+"Erreur serveur  : aucune demande ouverte non confirmée avec cet identifiant."
+
+#: db/requestmapper.php:94
+msgid "Server error: more than one request with same id!"
+msgstr "Erreur serveur : plus d'une demande avec le même identifiant !"
+
+#: db/requestmapper.php:164
+msgid "Server error: no open confirmed request with this id."
+msgstr "Erreur serveur : aucune demande confirmée avec cet identifiant."
+
+#: db/requestmapper.php:169
+msgid "Server error: more than one request with this id !!"
+msgstr "Erreur serveur : plus d'une demande avec cet identifiant !"
+
+#: js/user_files_migrate_settings.js:46
+msgid ""
+"Are you sure to CONFIRM this migration request from {requesterUid} to "
+"{currentUser} ?"
+msgstr ""
+"Êtes-vous sûr de CONFIRMER cette demande de migration de {requesterUid} vers "
+"{currentUser} ?"
+
+#: js/user_files_migrate_settings.js:75
+msgid "requesterUid"
+msgstr "requesterUid"
+
+#: service/mailservice.php:43 service/mailservice.php:72
+#, php-format
+msgid "%s - Files Migration processed"
+msgstr "%s - Migration des fichiers terminée"
+
+#: service/mailservice.php:139
+#, php-format
+msgid "%s - Files migration processed"
+msgstr "%s - Migration des fichiers terminée"
+
+#: templates/mail_monitoring_html.php:24 templates/mail_subadmins_html.php:24
+#: templates/mail_user_html.php:24
+msgid "<p>Hello,</p>"
+msgstr "<p>Bonjour,</p>"
+
+#: templates/mail_monitoring_html.php:25 templates/mail_subadmins_html.php:25
+#, php-format
+msgid ""
+"<p>A file migration request from account %s to account %s has been processed."
+"</p>\n"
+msgstr ""
+"<p>La demande de migration du compte %s vers le compte %s a été traitée.</"
+"p>\n"
+
+#: templates/mail_monitoring_text.php:10 templates/mail_subadmins_text.php:10
+#, php-format
+msgid ""
+"A file migration request from account %s to account %s has been processed.\n"
+msgstr ""
+"La demande de migration du compte %s vers le compte %s a été traitée.\n"
+
+#: templates/mail_user_html.php:25
+#, php-format
+msgid ""
+"<p>Your file migration request from account %s has been processed.</p>\n"
+msgstr "<p>Votre demande de migration depuis le compte %s a été traitée.</p>\n"
+
+#: templates/mail_user_text.php:10
+#, php-format
+msgid "Your file migration request from account %s has been processed.\n"
+msgstr "Votre demande de migration depuis le compte %s a été traitée.\n"
+
+#: templates/settings-personal.php:17
+msgid "User Files Migrate"
+msgstr "Migration des fichiers utilisateur"
+
+#: templates/settings-personal.php:23
+msgid ""
+"If you want to request files migration from your account to another account, "
+"please set the other account identifier: "
+msgstr ""
+"Si vous souhaitez demander une migration de vos fichiers vers un autre "
+"compte, merci de saisir l'identifiant de cet autre compte : "
+
+#: templates/settings-personal.php:31
+#, php-format
+msgid ""
+"You requested a files migration from your account to the account which "
+"identifier is: <span>%s</span>"
+msgstr ""
+"Vous avez demandé une migration de vos fichiers vers le compte d'identifiant "
+"<span>%s</span>"
+
+#: templates/settings-personal.php:38
+msgid "Please connect with the other account to validate this request"
+msgstr "Merci de vous connecter avec l'autre compte pour valider cette demande"
+
+#: templates/settings-personal.php:42
+msgid ""
+"Your files migration request has been confirmed. It will be processed soon."
+msgstr ""
+"Votre demande de migration a été confirmée. Elle sera traitée rapidement."
+
+#: templates/settings-personal.php:47
+msgid ""
+"A files migration has been requested from the account which identifier is: "
+msgstr "Une migration de fichier a été demandée depuis le compte : "
+
+#: templates/settings-personal.php:52
+msgid "From account's files size"
+msgstr "Taille des fichiers du compte d'origine"
+
+#: templates/settings-personal.php:52
+msgid "Your account disk space available"
+msgstr "Votre espace disque disponible"
+
+#: templates/settings-personal.php:63
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/settings-personal.php:64
+msgid "Confirm"
+msgstr "Confirmer"

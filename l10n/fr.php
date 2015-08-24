@@ -3,7 +3,7 @@
 
 "A files migration has been requested from the account which identifier is: " => "Une migration de fichier a été demandée depuis le compte : ",
 "Are you sure to CANCEL this migration request ?" => "Êtes-vous sûr de vouloir ANNULER cette demande de migration ?",
-"Are you sure to CONFIRM this migration request from {requesterUid} to {currentUser} ?" => "Êtes-vous sûr de CONFIRMER cette demande de migration de {requesterUid} vers {currentUser} ?",
+"Are you sure to CONFIRM this migration request from {requesterUid} to {currentUser} (the account {requesterUid2} will be blocked once this request confirmed) ?" => "Êtes-vous sûr de CONFIRMER cette demande de migration de {requesterUid} vers {currentUser} (le compte {requesterUid} sera bloqué une fois cela accepté) ?",
 "Cancel" => "Annuler",
 "Cancel migration request" => "Annuler votre demande de migration",
 "Confirm" => "Confirmer",

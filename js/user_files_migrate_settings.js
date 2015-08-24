@@ -50,7 +50,7 @@ $(document).ready(function() {
 
             // /usr/share/doc/udev/README.Debian.gz
             var requesterUid = $('#requester_uid').val();
-            OCdialogs.confirm(t('user_files_migrate', 'Are you sure to CONFIRM this migration request from {requesterUid} to {currentUser} ?', {'requesterUid': requesterUid, 'currentUser': OC.currentUser}), t('user_files_migrate', 'Confirm migration request'), confirmExtMigrationRequest, true);
+            OCdialogs.confirm(t('user_files_migrate', 'Are you sure to CONFIRM this migration request from {requesterUid} to {currentUser} (the account {requesterUid2} will be blocked once this request confirmed) ?', {'requesterUid': requesterUid, 'currentUser': OC.currentUser, 'requesterUid2': requesterUid}), t('user_files_migrate', 'Confirm migration request'), confirmExtMigrationRequest, true);
         });
     }
 

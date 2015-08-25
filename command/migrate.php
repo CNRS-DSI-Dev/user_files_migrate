@@ -115,7 +115,7 @@ class Migrate extends Command
             $toGroup->addUser($requesterUser);
 
             // send mails
-            $this->mailService->mailUser($request->getRequesterUid());
+            $this->mailService->mailUser($request->getRequesterUid(), $request->getRecipientUid());
             $this->mailService->mailGroupAdmin($request->getRequesterUid(), $request->getRecipientUid());
             $this->mailService->mailMonitors($request->getRequesterUid(), $request->getRecipientUid());
 

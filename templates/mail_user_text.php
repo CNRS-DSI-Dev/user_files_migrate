@@ -9,7 +9,7 @@
 
     $l = $_['overwriteL10N'];
 
-    print_unescaped($l->t("Your file migration request from account %s has been processed.", array($_['requester'])));
+    print_unescaped($l->t("Your file migration request from account %s has been processed.", array($_['user'])));
 ?>
 
 

@@ -33,24 +33,25 @@ class mailService
     /**
      * Send a mail signaling end of files migration to user
      * @param int $requesterUid (the "from migration account" id)
+     * @param int $recipientUid (the "to migration account" id)
      */
-    public function mailUser($requesterUid)
+    public function mailUser($requesterUid, $recipientUid)
     {
         $l = $this->getUserLanguage($requesterUid);
 
-        $toAddress = $toName = $requesterUid;
+        $toAddress = $toName = $recipientUid;
 
         $theme = new \OC_Defaults;
 
         $subject = (string) $l->t('%s - Files migration processed', array($theme->getTitle()));
         $html = new \OCP\Template($this->appName, "mail_user_html", "");
         $html->assign('overwriteL10N', $l);
-        $html->assign('requester', $requesterUid);
+        $html->assign('user', $requesterUid);
         $htmlMail = $html->fetchPage();
 
         $alttext = new \OCP\Template($this->appName, "mail_user_text", "");
         $alttext->assign('overwriteL10N', $l);
-        $alttext->assign('requester', $requesterUid);
+        $alttext->assign('user', $requesterUid);
         $altMail = $alttext->fetchPage();
 
         $fromAddress = $fromName = \OCP\Util::getDefaultEmailAddress('owncloud');

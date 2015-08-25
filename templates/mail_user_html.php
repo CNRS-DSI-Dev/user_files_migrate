@@ -24,7 +24,7 @@
 <td width="20px">&nbsp;</td>
 <td style="font-weight:normal; font-size:0.8em; line-height:1.2em; font-family:verdana,'arial',sans;">
     <p><?php p($l->t('Hello,')); ?></p>
-    <p><?php p($l->t("Your file migration request from account %s has been processed.", array($_['requester'])));?></p>
+    <p><?php p($l->t("Your file migration request from account %s has been processed.", array($_['user'])));?></p>
 </td>
 </tr>
 <tr><td colspan="2">&nbsp;</td></tr>

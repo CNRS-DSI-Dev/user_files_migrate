@@ -19,6 +19,7 @@
 "Request cancelled" => "Demande annulée",
 "Request confirmed" => "Demande confirmée",
 "Requesting a migration to self is not allowed." => "Demander une migration vers soi-même n'est pas autorisé.",
+"Server error: a pending request already exists for this recipient." => "Erreur serveur : une demande existe déjà pour ce destinatire.",
 "Server error: more than one request with same requester/recipient pair." => "Erreur serveur : plus d'une demande avec les mêmes demandeur/destinataire.",
 "Server error: no open unconfirmed request for this recipient." => "Erreur serveur : aucune demande ouverte non confirmée pour ce destinataire.",
 "Server error: no open unconfirmed request with this id." => "Erreur serveur  : aucune demande ouverte non confirmée avec cet identifiant.",

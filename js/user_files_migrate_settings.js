@@ -25,6 +25,11 @@ $(document).ready(function() {
                 $('#ufm_notifications_msg').delay(3000).fadeOut(900);
                 return
             }
+            if (data.status == 'error') {
+                alert(t('user_files_migrate', data.data.msg));
+                $('#ufm_notifications_msg').delay(3000).fadeOut(900);
+                return
+            }
             $('#ufm_cancel').show();
             $('#ufm_cancel_form span').text($('#recipient_uid').val());
 

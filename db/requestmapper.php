@@ -31,6 +31,22 @@ class RequestMapper extends Mapper
 
     public function saveRequest($requester_uid, $recipient_uid, $limit=null, $offset=null)
     {
+        // recipient has already a pending request, keep the pending request and reject the new
+        $sql = "SELECT * FROM *PREFIX*user_files_migrate WHERE recipient_uid = ? AND status != " . self::PROCESSED;
+        try {
+            $request = $this->findEntity($sql, array($recipient_uid), $limit, $offset);
+
+            throw new \Exception($this->l->t('Server error: a pending request already exists for this recipient.'));
+            return false;
+        }
+        catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
+        }
+        catch (\OCP\AppFramework\Db\MultipleObjectsReturnedException $e) {
+            throw new \Exception($this->l->t('Server error: more than one request with same requester/recipient pair.'));
+            return false;
+        }
+
+        // requester has already a pending request, delete this pending request and create the new
         $sql = "SELECT * FROM *PREFIX*user_files_migrate WHERE requester_uid = ? AND status != " . self::PROCESSED;
         try {
             $request = $this->findEntity($sql, array($requester_uid), $limit, $offset);

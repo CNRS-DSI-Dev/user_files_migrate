@@ -86,7 +86,7 @@ class mailService
         $alttext = new \OCP\Template($this->appName, "mail_monitoring_text", "");
         $alttext->assign('overwriteL10N', $l);
         $alttext->assign('requester', $requesterUid);
-        $html->assign('recipient', $recipientUid);
+        $alttext->assign('recipient', $recipientUid);
         $altMail = $alttext->fetchPage();
 
         $fromAddress = $fromName = \OCP\Util::getDefaultEmailAddress('owncloud');
@@ -146,7 +146,6 @@ class mailService
         }
 
         $theme = new \OC_Defaults;
-
         $subject = (string) $l->t('%s - Files migration processed', array($theme->getTitle()));
         $html = new \OCP\Template($this->appName, "mail_subadmins_html", "");
         $html->assign('overwriteL10N', $l);
@@ -157,7 +156,7 @@ class mailService
         $alttext = new \OCP\Template($this->appName, "mail_subadmins_text", "");
         $alttext->assign('overwriteL10N', $l);
         $alttext->assign('requester', $requesterUid);
-        $html->assign('recipient', $recipientUid);
+        $alttext->assign('recipient', $recipientUid);
         $altMail = $alttext->fetchPage();
 
         $fromAddress = $fromName = \OCP\Util::getDefaultEmailAddress('owncloud');

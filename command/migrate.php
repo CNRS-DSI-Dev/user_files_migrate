@@ -112,7 +112,22 @@ class Migrate extends Command
                 return false;
             }
             $toGroup = $this->groupManager->get($toGroupId);
-            $toGroup->addUser($requesterUser);
+            // try catch does not work here...
+            if ($toGroup instanceof \OC\Group\Group) {
+                $toGroup->addUser($requesterUser);
+            }
+            else {
+                $this->consoleDisplay('Error: exclusion group found in config.php not existing in My CoRe.');
+
+                $toAddress = $toName = \OCP\Config::getSystemValue('migration_default_admin_email');
+                $fromAddress = $fromName = \OCP\Util::getDefaultEmailAddress('owncloud');
+                $subject = "My CoRe - Files Migration Error";
+                $text = "Error in files migration process due to configured exclusion group not found.\n";
+                $text .= "Therefore, the user " . $request->getRecipientUid() . " has not been added in any exclusion group. ";
+                $text .= "Please verify that all exclusion groups configured (in config.php) exist in My CoRe.\n".
+
+                \OCP\Util::sendMail($toAddress, $toName, $subject, $text, $fromAddress, $fromName, 1);
+            }
 
             // send mails
             $this->mailService->mailUser($request->getRequesterUid(), $request->getRecipientUid());

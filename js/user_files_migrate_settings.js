@@ -53,7 +53,6 @@ $(document).ready(function() {
         $('#migrationConfirm').on('click', function(event) {
             event.preventDefault();
 
-            // /usr/share/doc/udev/README.Debian.gz
             var requesterUid = $('#requester_uid').val();
             OCdialogs.confirm(t('user_files_migrate', 'Are you sure to CONFIRM this migration request from {requesterUid} to {currentUser} (the account {requesterUid2} will be blocked once this request confirmed) ?', {'requesterUid': requesterUid, 'currentUser': OC.currentUser, 'requesterUid2': requesterUid}), t('user_files_migrate', 'Confirm migration request'), confirmExtMigrationRequest, true);
         });
@@ -84,7 +83,7 @@ function confirmExtMigrationRequest(ok) {
         .success(function(data) {
             if (data.status == 'success') {
                 OC.msg.finishedSaving('#ufm_notifications_msg', data);
-                $('#extRequestWaiting').text(t('user_files_migrate', 'Your migration request from {requesterUid} is confirmed. It will be processed soon.', {'requesterUid': $('#requester_uid').val()}));
+                $('#extRequestWaiting').text(t('user_files_migrate', 'Your migration request from {requesterUid} is confirmed. It will be processed in the next 24 hours.', {'requesterUid': $('#requester_uid').val()}));
             }
         })
         .fail(function() {

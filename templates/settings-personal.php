@@ -39,7 +39,7 @@
     </p>
 
     <p class="ufm_msg_confirmed" style="display: <?php p($_['msgConfirmedDisplay']);?>">
-        <?php p($l->t("Your files migration request has been confirmed. It will be processed soon.")); ?>
+        <?php p($l->t("Your files migration request has been confirmed. It will be processed in the next 24 hours.")); ?>
     </p>
 
     <div id="extRequestWaiting" style="display: <?php p($_['waitingDisplay']);?>">

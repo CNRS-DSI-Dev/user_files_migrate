@@ -58,7 +58,8 @@ class RequestService
      */
     public function getFreeSpace()
     {
-        $storageInfo = \OC_Helper::getStorageInfo();
+        $dirInfo = \OC\Files\Filesystem::getFileInfo('/', false);
+        $storageInfo = \OC_Helper::getStorageInfo('/', $dirInfo);
         $fileSize = $storageInfo['free'];
 
         return $fileSize;

@@ -27,40 +27,6 @@ class User_Files_Migrate extends App {
         $container = $this->getContainer();
 
         /**
-         * Controllers
-         */
-        $container->registerService('RequestController', function($c){
-            return new RequestController(
-                $c->query('AppName'),
-                $c->query('Request'),
-                $c->query('L10N'),
-                $c->query('RequestMapper'),
-                $c->query('RequestService'),
-                $c->query('UserId')
-            );
-        });
-
-        /**
-         * Services
-         */
-        $container->registerService('RequestService', function($c){
-            return new RequestService(
-                $c->query('RequestMapper'),
-                $c->query('UserId')
-            );
-        });
-
-        $container->registerService('MailService', function($c){
-            return new MailService(
-                $c->query('AppName'),
-                $c->query('L10N'),
-                $c->query('Config'),
-                $c->query('UserManager'),
-                $c->query('GroupManager')
-            );
-        });
-
-        /**
          * Storage Layer
          */
         $container->registerService('RootStorage', function($c) {

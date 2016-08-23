@@ -21,7 +21,7 @@ class mailService
     protected $userManager;
     protected $groupManager;
 
-    public function __construct($appName, IL10N $l, IConfig $config, $userManager, $groupManager)
+    public function __construct($appName, IL10N $l, IConfig $config, \OCP\IUserManager $userManager, \OCP\IGroupManager $groupManager)
     {
         $this->appName = $appName;
         $this->l = $l;

@@ -10,20 +10,20 @@
 
 namespace OCA\User_Files_Migrate\Controller;
 
-use \OCP\AppFramework\APIController;
+use \OCP\AppFramework\ApiController;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\IRequest;
 use \OCP\IL10N;
 use \OCA\User_Files_Migrate\Db\RequestMapper;
 use \OCA\User_Files_Migrate\Db\Request;
 
-class RequestController extends APIController
+class RequestController extends ApiController
 {
 
     protected $requestService;
     protected $userId;
 
-    public function __construct($appName, IRequest $request, IL10N $l, RequestMapper $requestMapper, $requestService, $userId)
+    public function __construct($appName, IRequest $request, IL10N $l, RequestMapper $requestMapper, \OCA\User_Files_Migrate\Service\RequestService$requestService, $userId)
     {
         parent::__construct($appName, $request, 'GET, POST');
         $this->l = $l;
@@ -35,7 +35,6 @@ class RequestController extends APIController
     /**
      * Create a request
      * @NoAdminRequired
-     * @CORS
      * @param string $recipientUid
      */
     public function ask($recipientUid)

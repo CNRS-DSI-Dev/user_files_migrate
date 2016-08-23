@@ -21,7 +21,7 @@ $c = $app->getContainer();
 $tmpl = new \OCP\Template($c->query('AppName'), 'settings-personal');
 
 $uid = $c->query('UserId');
-$infos = $c->query('RequestService')->getInfos();
+$infos = $c->query('\OCA\User_Files_Migrate\Service\RequestService')->getInfos();
 $ownRequest = $infos['ownRequest'];
 $extRequest = $infos['extRequest'];
 
@@ -65,7 +65,7 @@ if (!empty($extRequest)) {
         $extRequestId = $extRequest->getId();
         $extRequestRequester = $extRequest->getRequesterUid();
 
-        $requesterFileSize = $c->query('RequestService')->getRequesterUsedSpace($extRequestRequester);
+        $requesterFileSize = $c->query('\OCA\User_Files_Migrate\Service\RequestService')->getRequesterUsedSpace($extRequestRequester);
         if (empty($requesterFileSize)) {
             $humanRequesterFileSize = "Empty";
         }
@@ -73,7 +73,7 @@ if (!empty($extRequest)) {
             $humanRequesterFileSize = \OC_Helper::humanFileSize($requesterFileSize);
         }
 
-        $ownFileSize = $c->query('RequestService')->getFreeSpace();
+        $ownFileSize = $c->query('\OCA\User_Files_Migrate\Service\RequestService')->getFreeSpace();
         // $ownFileSize = 10; // test
         $humanOwnFileSize = \OC_Helper::humanFileSize($ownFileSize);
 

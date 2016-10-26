@@ -13,7 +13,7 @@ namespace OCA\User_Files_Migrate\Service;
 use \OCP\IL10N;
 use \OCP\IConfig;
 
-class mailService
+class MailService
 {
     protected $appName;
     protected $l;

@@ -133,4 +133,93 @@ class RequestController extends ApiController
         return $result;
     }
 
+    /**
+     * returns migration requests list for a given user
+     * @param  [type]  $uid    [description]
+     * @param  integer $status [description]
+     * @return [type]          [description]
+     */
+    public function requests($uid=null, $status=0)
+    {
+        if (is_null($uid)) {
+            $uid = $this->userId;
+            $response = new JSONResponse();
+            return array(
+                'status' => 'error',
+                'data' => array(
+                    'msg' => 'No uid given',
+                ),
+            );
+        }
+
+        try {
+            $ownRequest = $this->requestMapper->findOwnRequest($uid);
+            $extRequest = $this->requestMapper->findExtRequest($uid);
+        }
+        catch(\Exception $e) {
+            $response = new JSONResponse();
+            return array(
+                'status' => 'error',
+                'data' => array(
+                    'msg' => $e->getMessage(),
+                ),
+            );
+        }
+
+        $requestList = [];
+        if (!empty($ownRequest)) {
+            $row = [
+                'requester' => ($ownRequest->getRequesterUid() == $uid) ? '[ user ]' : $ownRequest->getRequesterUid(),
+                'recipient' => ($ownRequest->getRecipientUid() == $uid) ? '[ user ]' : $ownRequest->getRecipientUid(),
+                'date' => $ownRequest->getDateRequest(),
+            ];
+            switch($ownRequest->getStatus()) {
+                case RequestMapper::CREATED: {
+                    $status = 'CREATED';
+                    break;
+                }
+                case RequestMapper::CONFIRMED: {
+                    $status = 'CONFIRMED';
+                    break;
+                }
+                default: {
+                    $status = '';
+                }
+            }
+            $row['status'] = $status;
+            array_push($requestList, $row);
+        }
+
+        if (!empty($extRequest)) {
+            $row = [
+                'requester' => ($extRequest->getRequesterUid() == $uid) ? '[ user ]' : $extRequest->getRequesterUid(),
+                'recipient' => ($extRequest->getRecipientUid() == $uid) ? '[ user ]' : $extRequest->getRecipientUid(),
+                'date' => $extRequest->getDateRequest(),
+            ];
+            switch($extRequest->getStatus()) {
+                case RequestMapper::CREATED: {
+                    $status = 'CREATED';
+                    break;
+                }
+                case RequestMapper::CONFIRMED: {
+                    $status = 'CONFIRMED';
+                    break;
+                }
+                default: {
+                    $status = '';
+                }
+            }
+            $row['status'] = $status;
+            array_push($requestList, $row);
+        }
+
+        return array(
+            'status' => 'success',
+            'data' => array(
+                'msg' => $this->l->t('Migration requests'),
+                'requests' => $requestList,
+            ),
+        );
+    }
+
 }

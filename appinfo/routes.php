@@ -36,6 +36,11 @@ $application->registerRoutes($this, array(
             'url' => '/api/1.0/request',
             'verb' => 'POST',
         ),
+        array(
+            'name' => 'request#requests',
+            'url' => '/api/1.0/requests',
+            'verb' => 'GET',
+        ),
 
         // CORS
         array(

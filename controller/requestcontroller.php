@@ -12,6 +12,8 @@ namespace OCA\User_Files_Migrate\Controller;
 
 use \OCP\AppFramework\ApiController;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\IUserManager;
+use \OCP\IGroupManager;
 use \OCP\IRequest;
 use \OCP\IL10N;
 use \OCA\User_Files_Migrate\Db\RequestMapper;
@@ -22,14 +24,18 @@ class RequestController extends ApiController
 
     protected $requestService;
     protected $userId;
+    protected $userManager;
+    protected $groupManager;
 
-    public function __construct($appName, IRequest $request, IL10N $l, RequestMapper $requestMapper, \OCA\User_Files_Migrate\Service\RequestService$requestService, $userId)
+    public function __construct($appName, IRequest $request, IL10N $l, RequestMapper $requestMapper, \OCA\User_Files_Migrate\Service\RequestService$requestService, $userId, IUserManager $userManager, IGroupManager $groupManager)
     {
         parent::__construct($appName, $request, 'GET, POST');
         $this->l = $l;
         $this->requestMapper = $requestMapper;
         $this->requestService = $requestService;
         $this->userId = $userId;
+        $this->groupManager = $groupManager;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -138,9 +144,12 @@ class RequestController extends ApiController
      * @param  [type]  $uid    [description]
      * @param  integer $status [description]
      * @return [type]          [description]
+     * @NoAdminRequired
      */
     public function requests($uid=null, $status=0)
     {
+        \OC_Util::checkSubAdminUser();
+
         if (is_null($uid)) {
             $uid = $this->userId;
             $response = new JSONResponse();
@@ -148,6 +157,18 @@ class RequestController extends ApiController
                 'status' => 'error',
                 'data' => array(
                     'msg' => 'No uid given',
+                ),
+            );
+        }
+
+        $user = $this->userManager->get($uid);
+        $currentUser = $this->userManager->get($this->userId);
+
+        if (!$this->groupManager->getSubAdmin()->isUserAccessible($currentUser, $user)) {
+            return array(
+                'status' => 'error',
+                'data' => array(
+                    'msg' => 'Authentication error',
                 ),
             );
         }

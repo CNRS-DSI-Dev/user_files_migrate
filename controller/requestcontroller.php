@@ -164,7 +164,9 @@ class RequestController extends ApiController
         $user = $this->userManager->get($uid);
         $currentUser = $this->userManager->get($this->userId);
 
-        if (!$this->groupManager->getSubAdmin()->isUserAccessible($currentUser, $user)) {
+        $isAdmin = $this->groupManager->isAdmin($this->userId);
+
+        if (!$isAdmin and !$this->groupManager->getSubAdmin()->isUserAccessible($currentUser, $user)) {
             return array(
                 'status' => 'error',
                 'data' => array(

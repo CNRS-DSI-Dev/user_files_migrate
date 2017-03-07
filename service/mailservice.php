@@ -176,7 +176,7 @@ class MailService
     {
         $lang = \OCP\Config::getSystemValue('default_language', 'en');
 
-        return \OC_L10N::get($this->appName, $lang);
+        return \OC::$server->getL10N($this->appName, $lang);
     }
 
     /**
@@ -188,6 +188,6 @@ class MailService
     {
         $lang = \OCP\Config::getUserValue($userId, 'core', 'lang', \OCP\Config::getSystemValue('default_language', 'en'));
 
-        return \OC_L10N::get($this->appName, $lang);
+        return \OC::$server->getL10N($this->appName, $lang);
     }
 }

@@ -162,7 +162,7 @@ class MailService
         $fromAddress = $fromName = \OCP\Util::getDefaultEmailAddress('owncloud');
 
         try {
-            \OCP\Util::sendMail($toAddress, $toName, $subject, $htmlMail, $fromAddress, $fromName, 1, $altMail);
+            \OCP\Util::sendMail($toAddress, '', $subject, $htmlMail, $fromAddress, $fromName, 1, $altMail);
         } catch (\Exception $e) {
             \OCP\Util::writeLog('user_files_migrate', "Can't send mail for subadmins: " . $e->getMessage(), \OCP\Util::ERROR);
         }

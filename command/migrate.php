@@ -134,6 +134,7 @@ class Migrate extends Command
             $this->mailService->mailGroupAdmin($request->getRequesterUid(), $request->getRecipientUid());
             $this->mailService->mailMonitors($request->getRequesterUid(), $request->getRecipientUid());
 
+	    $this->scan($request->getRecipientUid());
             $this->requestMapper->closeRequest($request->getId());
         }
     }
@@ -238,4 +239,45 @@ class Migrate extends Command
             }
         }
     }
+
+	/**
+	 * Returns scan for a user
+	 * @NoAdminRequired
+	 * @param  string $uid User id
+	 * @return json
+	 */
+    	public function scan($uid){
+		$scan = null;
+		if(!empty($uid)){
+			$scan = shell_exec("php occ files:scan ".$uid);
+
+			if(preg_match("/\|\s*\d+\s*\|\s*\d+\s*\|\s*\d+\:\d+\:\d+\s*\|/i", $scan)){
+           	 	    $scan =  array(
+           	 	        'status' => 'success',
+           	 	        'data' => array(
+           	 	            'msg' => $scan,
+           	 	        ),
+           	 	    );
+			}
+			else{
+           	 	    $scan =  array(
+           	 	        'status' => 'error',
+           	 	        'data' => array(
+           	 	            'msg' => $scan,
+           	 	        ),
+           	 	    );
+			}
+		}
+		else{
+           	    $scan =  array(
+           	        'status' => 'error',
+           	        'data' => array(
+           	            'msg' => "userid not correct",
+           	        ),
+           	    );
+		}
+		return $scan;
+	}
+
+
 }

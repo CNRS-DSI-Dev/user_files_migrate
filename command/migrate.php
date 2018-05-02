@@ -10,6 +10,9 @@
 
 namespace OCA\User_Files_Migrate\Command;
 
+use OC\Files\Utils\Scanner;
+use OCP\Files\NotFoundException;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -134,7 +137,7 @@ class Migrate extends Command
             $this->mailService->mailGroupAdmin($request->getRequesterUid(), $request->getRecipientUid());
             $this->mailService->mailMonitors($request->getRequesterUid(), $request->getRecipientUid());
 
-	    $this->scan($request->getRecipientUid());
+            $this->scan($request->getRecipientUid());
             $this->requestMapper->closeRequest($request->getId());
         }
     }
@@ -240,44 +243,49 @@ class Migrate extends Command
         }
     }
 
-	/**
-	 * Returns scan for a user
-	 * @NoAdminRequired
-	 * @param  string $uid User id
-	 * @return json
-	 */
-    	public function scan($uid){
-		$scan = null;
-		if(!empty($uid)){
-			$scan = shell_exec("php occ files:scan ".$uid);
+    /**
+     * Scan user filesystem
+     * @param  string $uid User id
+     * @return json
+     */
+    public function scan($uid){
+        $uid = htmlspecialchars($uid);
+        $arrayStatus = 'status';
+        $arrayData = 'data';
+        $arrayMsg = 'msg';
+        $jsonReturn = array(
+                            $arrayStatus => 'error',
+                            $arrayData => array(
+                                $arrayMsg => '',
+                            ),
+                        );
+        try {
 
-			if(preg_match("/\|\s*\d+\s*\|\s*\d+\s*\|\s*\d+\:\d+\:\d+\s*\|/i", $scan)){
-           	 	    $scan =  array(
-           	 	        'status' => 'success',
-           	 	        'data' => array(
-           	 	            'msg' => $scan,
-           	 	        ),
-           	 	    );
-			}
-			else{
-           	 	    $scan =  array(
-           	 	        'status' => 'error',
-           	 	        'data' => array(
-           	 	            'msg' => $scan,
-           	 	        ),
-           	 	    );
-			}
-		}
-		else{
-           	    $scan =  array(
-           	        'status' => 'error',
-           	        'data' => array(
-           	            'msg' => "userid not correct",
-           	        ),
-           	    );
-		}
-		return $scan;
-	}
+            $user = $this->userManager->get($uid);
 
+            if($user == null){
+                throw new NotFoundException('incorrect uid');
+            }
+            else{
+                $scanner = new Scanner(
+                    $user->getUID(),
+                    \OC::$server->getDatabaseConnection(),
+                    \OC::$server->getLogger()
+                );
 
+                $scanner->scan('', true);
+
+                $jsonReturn[$arrayStatus] = 'success';
+                $jsonReturn[$arrayData][$arrayMsg] = 'Scan successful';
+            }
+        } catch (\Exception $e) {
+
+            $jsonReturn[$arrayStatus] = 'error';
+            $jsonReturn[$arrayData][$arrayMsg] = $e->getMessage();
+
+            return $jsonReturn;
+        }
+
+        return $jsonReturn;
+    }  
 }

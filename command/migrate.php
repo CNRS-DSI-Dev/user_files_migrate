@@ -11,6 +11,7 @@
 namespace OCA\User_Files_Migrate\Command;
 
 use OC\Files\Utils\Scanner;
+use OCA\Files\Command\TransferOwnership;
 use OCP\Files\NotFoundException;
 
 use Symfony\Component\Console\Command\Command;
@@ -88,10 +89,29 @@ class Migrate extends Command
 
         // go
         foreach($requests as $request) {
-            $this->consoleDisplay('Migration request #' . $request->getId() . ': from uid "' . $request->getRequesterUid() . '"" to uid "' . $request->getRecipientUid() .'"');
+            $this->consoleDisplay('Migration request #' . $request->getId() . ': from uid "' . $request->getRequesterUid() . '" to uid "' . $request->getRecipientUid() .'"');
 
             // copy files
-            $this->recursiveCopy($request->getRequesterUid(), $request->getRecipientUid());
+                //---------------------------  mantis 59262            
+	        //shell_exec("./occ files:transfer-ownership ".$request->getRequesterUid()." ".$request->getRecipientUid());
+            $transfer = new TransferOwnership(
+                \OC::$server->getUserManager(),
+                \OC::$server->getShareManager(),
+                \OC::$server->getMountManager(),
+                \OC::$server->getEncryptionManager(),
+                \OC::$server->getLogger()
+            );
+
+            // input au format argv
+            $cmd = "files:transfer-ownership";
+            $input = new ArrayInput(array('source-user'=>$request->getRequesterUid(),'destination-user'=>$request->getRecipientUid()));
+            shell_exec('echo '.$input->getFirstArgument(). '>>test.log');
+            $input = new ArgvInput(array('source-user'=>$request->getRequesterUid(),'destination-user'=>$request->getRecipientUid()));
+            shell_exec('echo '.$input->getFirstArgument(). '>>test.log');
+            $output = new ConsoleOutput();
+
+            $transfer->execute($input, $output);
+                //---------------------------
 
             // put old account in special group
             // -- search groups for requester

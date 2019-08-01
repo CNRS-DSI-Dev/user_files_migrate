@@ -11,7 +11,6 @@
 namespace OCA\User_Files_Migrate\Command;
 
 use OC\Files\Utils\Scanner;
-use OCA\Files\Command\TransferOwnership;
 use OCP\Files\NotFoundException;
 
 use Symfony\Component\Console\Command\Command;
@@ -19,10 +18,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 use OC\DB\Connection;
 
@@ -145,28 +140,6 @@ class Migrate extends Command
 
             $this->scan($request->getRecipientUid());
             $this->requestMapper->closeRequest($request->getId());
-        }
-    }
-
-    protected function recursiveCopy($requesterUid, $recipientUid)
-    {
-        $rootDir = \OCP\Config::getSystemValue('datadirectory', '/var/www/owncloud/data');
-        $source = $rootDir . '/' . $requesterUid;
-        $dest= $rootDir . '/' . $recipientUid;
-
-        // http://stackoverflow.com/a/7775949/1997849
-        foreach (
-         $iterator = new \RecursiveIteratorIterator(
-          new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
-          \RecursiveIteratorIterator::SELF_FIRST) as $item
-        ) {
-          if ($item->isDir()) {
-            if (!file_exists($dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName())) {
-                mkdir($dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
-            }
-          } else {
-            copy($item, $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
-          }
         }
     }
 

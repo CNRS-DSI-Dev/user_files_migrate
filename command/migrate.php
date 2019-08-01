@@ -95,27 +95,9 @@ class Migrate extends Command
         foreach($requests as $request) {
             $this->consoleDisplay('Migration request #' . $request->getId() . ': from uid "' . $request->getRequesterUid() . '" to uid "' . $request->getRecipientUid() .'"');
 
-            // copy files
-                //---------------------------  mantis 59262            
-	        //shell_exec("./occ files:transfer-ownership ".$request->getRequesterUid()." ".$request->getRecipientUid());
-            $transfer = new TransferOwnership(
-                \OC::$server->getUserManager(),
-                \OC::$server->getShareManager(),
-                \OC::$server->getMountManager(),
-                \OC::$server->getEncryptionManager(),
-                \OC::$server->getLogger()
-            );
-
-            // input au format argv
-            $cmd = "files:transfer-ownership";
-            $input = new ArrayInput(array('source-user'=>$request->getRequesterUid(),'destination-user'=>$request->getRecipientUid()));
-            shell_exec('echo '.$input->getFirstArgument(). '>>test.log');
-            $input = new ArgvInput(array('source-user'=>$request->getRequesterUid(),'destination-user'=>$request->getRecipientUid()));
-            shell_exec('echo '.$input->getFirstArgument(). '>>test.log');
-            $output = new ConsoleOutput();
-
-            $transfer->execute($input, $output);
-                //---------------------------
+	    	// copy files
+            // -- mantis 59262            
+	    	shell_exec("./occ files:transfer-ownership ".$request->getRequesterUid()." ".$request->getRecipientUid());
 
             // put old account in special group
             // -- search groups for requester

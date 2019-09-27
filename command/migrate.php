@@ -88,15 +88,36 @@ class Migrate extends Command
 
         // go
         foreach($requests as $request) {
-            $this->consoleDisplay('Migration request #' . $request->getId() . ': from uid "' . $request->getRequesterUid() . '" to uid "' . $request->getRecipientUid() .'"');
+            $requester = $request->getRequesterUid();
+            $recipient = $request->getRecipientUid();
+
+            $this->consoleDisplay('Migration request #' . $request->getId() . ': from uid "' . $requester . '" to uid "' . $recipient .'"');
 
 	    	// copy files
             // -- mantis 59262            
-	    	shell_exec("./occ files:transfer-ownership ".$request->getRequesterUid()." ".$request->getRecipientUid());
+            shell_exec("./occ files:transfer-ownership ".$requester." ".$recipient);
+            
+            // démarrer une transaction
+            \OC::$server->getDatabaseConnection()->beginTransaction();
+            // Move shared files with requester to the recipient
+            try{
+                $sql = "UPDATE *PREFIX*share SET share_with = :newName WHERE share_with = :oldName";
+                $st = \OC_DB::prepare($sql);
+                $st->execute(array(
+                    ':newName' => $recipient,
+                    ':oldName' => $requester,
+                ));
+                // finir la transaction (commit)
+                \OC::$server->getDatabaseConnection()->commit();
+            }
+            catch(\Exception $e) {
+                \OC::$server->getDatabaseConnection()->rollback();
+                return false;
+            }
 
             // put old account in special group
             // -- search groups for requester
-            $requesterUser = $this->userManager->get($request->getRequesterUid());
+            $requesterUser = $this->userManager->get($requester);
             $groupIds = $this->groupManager->getUserGroupIds($requesterUser);
             // -- search main group
             $exclusionGroupConf =  \OCP\config::getSystemValue('migration_exclusion_groups');
@@ -127,18 +148,18 @@ class Migrate extends Command
                 $fromAddress = $fromName = \OCP\Util::getDefaultEmailAddress('owncloud');
                 $subject = "My CoRe - Files Migration Error";
                 $text = "Error in files migration process due to configured exclusion group not found.\n";
-                $text .= "Therefore, the user " . $request->getRecipientUid() . " has not been added in any exclusion group. ";
+                $text .= "Therefore, the user " . $recipient . " has not been added in any exclusion group. ";
                 $text .= "Please verify that all exclusion groups configured (in config.php) exist in My CoRe.\n".
 
                 \OCP\Util::sendMail($toAddress, $toName, $subject, $text, $fromAddress, $fromName, 1);
             }
 
             // send mails
-            $this->mailService->mailUser($request->getRequesterUid(), $request->getRecipientUid());
-            $this->mailService->mailGroupAdmin($request->getRequesterUid(), $request->getRecipientUid());
-            $this->mailService->mailMonitors($request->getRequesterUid(), $request->getRecipientUid());
+            $this->mailService->mailUser($requester, $recipient);
+            $this->mailService->mailGroupAdmin($requester, $recipient);
+            $this->mailService->mailMonitors($requester, $recipient);
 
-            $this->scan($request->getRecipientUid());
+            $this->scan($recipient);
             $this->requestMapper->closeRequest($request->getId());
         }
     }

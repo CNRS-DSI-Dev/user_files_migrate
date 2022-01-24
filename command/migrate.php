@@ -159,7 +159,7 @@ class Migrate extends Command
             $this->mailService->mailGroupAdmin($requester, $recipient);
             $this->mailService->mailMonitors($requester, $recipient);
 
-            $this->scan($recipient);
+//no need since we use API            $this->scan($recipient);
             $this->requestMapper->closeRequest($request->getId());
         }
     }

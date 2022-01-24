@@ -9,10 +9,15 @@
 
     $l = $_['overwriteL10N'];
 
-    print_unescaped($l->t("Your file migration request from account %s has been processed.", array($_['user'])));
+        print_unescaped($l->t("Hello,", array($_['user'])));
+        print_unescaped('<br><br>');
+	print_unescaped($l->t("Your file migration request from account %s has been processed.", array($_['user'])));
+	print_unescaped('<br><br>');
 ?>
 
 
 --
-<?php p($theme->getName() . ' - ' . $theme->getSlogan()); ?>
-<?php print_unescaped("\n".$theme->getBaseUrl());
+<?php print_unescaped('<br><br>'); ?>
+<?php p($theme->getEntity() . ' - ' . $theme->getSlogan()); ?>
+<?php print_unescaped('<br><br>'); ?>
+<?php print_unescaped("\n".$theme->getBaseUrl()); ?>
